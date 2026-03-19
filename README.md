@@ -1,6 +1,6 @@
 # ECB Exchange Rate API
 
-自托管汇率 API，基于欧洲央行 (ECB) 每日数据，支持任意货币间交叉汇率查询。输出格式兼容 [exchangerate-api.com/v4](https://www.exchangerate-api.com/)。
+自托管汇率 API，基于欧洲央行 (ECB) 每日数据，支持任意货币间交叉汇率查询。
 
 ## 功能特性
 
@@ -15,7 +15,6 @@ rate_api.php        # HTTP API 入口
 rate_service.php    # 核心服务类
 rate_config.php     # 配置文件
 data/               # 自动创建，存放缓存数据
-
 ```
 
 
@@ -38,7 +37,7 @@ https://你的域名/rate_api.php?base=CNY
 |---|---|---|
 | `refresh_hours` | `6` | 刷新间隔（小时） |
 | `alert_webhook` | `''` | 飞书 / Telegram Webhook URL |
-| `telegram_chat_id` | `''` | Telegram chat_id |
+| `telegram_chat_id` | `''` | Telegram chat_id（需要赋予置顶权限） |
 | `notify_rate_change` | `true` | 汇率变动推送 |
 | `watch_currencies` | `['CNY','GBP','USD','JPY']` | 关注汇率变动的货币 |
 | `alert_cooldown_minutes` | `60` | 告警冷却（分钟） |
