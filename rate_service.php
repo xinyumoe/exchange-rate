@@ -268,6 +268,9 @@ class ExchangeRateService
             $newVal = $newRates[$cur];
             if (isset($oldRates[$cur])) {
                 $oldVal = $oldRates[$cur];
+                if ($oldVal == $newVal) {
+                    continue;
+                }
                 $diff = $newVal - $oldVal;
                 $pct = $oldVal > 0 ? ($diff / $oldVal) * 100 : 0;
                 $sign = $diff >= 0 ? '+' : '';
