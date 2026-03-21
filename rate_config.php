@@ -26,6 +26,10 @@ return [
     // 汇率更新时重点关注的货币列表（推送变动摘要）
     'watch_currencies' => ['CNY', 'GBP', 'USD', 'JPY'],
 
+    // 变动推送的基准货币（默认 EUR，可改为 CNY/GBP/USD 等）
+    // 例如设为 CNY 时推送内容将显示: GBP: 0.109 → 0.110（基准: CNY）
+    'notify_base_currency' => 'EUR',
+
     // 告警冷却时间（分钟），同一时间段内最多发送一次告警，防止刷屏
     'alert_cooldown_minutes' => 60,
 ];

@@ -16,6 +16,7 @@ class ExchangeRateService
     protected $alertTimeFile;
     protected $watchCurrencies;
     protected $notifyRateChange;
+    protected $notifyBaseCurrency;
     protected $telegramChatId;
 
     public function __construct($config = [])
@@ -28,6 +29,7 @@ class ExchangeRateService
         $this->alertTimeFile = $this->dataDir . '/last_alert.txt';
         $this->watchCurrencies = $config['watch_currencies'] ?? ['CNY', 'GBP', 'USD', 'JPY'];
         $this->notifyRateChange = $config['notify_rate_change'] ?? true;
+        $this->notifyBaseCurrency = strtoupper(trim($config['notify_base_currency'] ?? 'EUR'));
         $this->telegramChatId = $config['telegram_chat_id'] ?? '';
 
         if (!is_dir($this->dataDir)) {
@@ -260,14 +262,26 @@ class ExchangeRateService
             return;
         }
 
+        // 以配置的基准货币转换汇率
+        $base = $this->notifyBaseCurrency;
+        $oldRates['EUR'] = 1.0;
+        $newRates['EUR'] = 1.0;
+
+        if (!isset($oldRates[$base]) || !isset($newRates[$base])) {
+            $base = 'EUR';
+        }
+
+        $oldBase = $oldRates[$base];
+        $newBase = $newRates[$base];
+
         $lines = [];
         foreach ($this->watchCurrencies as $cur) {
-            if (!isset($newRates[$cur])) {
+            if ($cur === $base || !isset($newRates[$cur])) {
                 continue;
             }
-            $newVal = $newRates[$cur];
+            $newVal = $newRates[$cur] / $newBase;
             if (isset($oldRates[$cur])) {
-                $oldVal = $oldRates[$cur];
+                $oldVal = $oldRates[$cur] / $oldBase;
                 if ($oldVal == $newVal) {
                     continue;
                 }
@@ -287,7 +301,7 @@ class ExchangeRateService
         $oldDate = $oldData['date'] ?? '未知';
         $newDate = $newData['date'] ?? '未知';
         $text = "📊 ECB 汇率已更新 ({$oldDate} → {$newDate})\n"
-            . "基准: EUR\n"
+            . "基准: {$base}\n"
             . implode("\n", $lines);
 
         $this->sendWebhook($text);
